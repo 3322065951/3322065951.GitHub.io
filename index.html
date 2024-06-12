@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抽奖</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        p {
+            text-align: center;
+            font-size: 40px;
+            font-weight: 700;
+            margin-top: 20px;
+            margin-bottom: 25px;
+        }  
+        #tab1 {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: separate;
+            text-align: center;
+            font-size: 1em;
+            font-weight: 700;
+            border-spacing: 5px;
+        }
+        #tab1 td {
+            width: 24%;
+            padding: 4%;
+            border: 0.3em solid seagreen;
+        }
+        #start {
+            padding: 0 !important;
+        }
+        button {
+            font-size: 1em;
+            font-weight: 700;
+            color: #fff;
+            width: 100% !important;
+            height: 114px !important;
+            background-color: royalblue;
+            cursor: pointer;
+            border: 0;
+
+        } 
+        .df {
+            margin: 20px auto;
+            width: 40%;
+            padding: 1em;
+            border: 9px solid blueviolet;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .we {
+            font-size: 1em;
+            font-weight: 700;
+        }
+        .df table tr td {
+            width: 50%;
+            padding: 2px;
+            font-size: 1em;
+            font-weight: 700;
+        }
+        .one {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <p>随机礼物 转转转</p>
+    <table id="tab1">
+        <tr>
+            <td id="zhuan">一包辣条</td>
+            <td id="zhuan">唇膏</td>
+            <td id="zhuan">倒发2￥</td>
+            <td id="zhuan">毛毛玩偶</td>
+        </tr>
+        <tr>
+            <td id="zhuan">谢谢惠顾</td>
+            <td colspan="2" id="start"><button>点击开始(<span id="shu"></span>次)</button></td>
+            <td id="zhuan">再转一次</td>
+        </tr>
+        <tr>
+            <td id="zhuan">拥抱一次</td>
+            <td id="zhuan">水果捞</td>
+            <td id="zhuan">奶茶一杯</td>
+            <td id="zhuan">红包2￥</td>
+        </tr>
+    </table>
+
+
+    <div class="df">
+        <div class="we">《可兑奖礼物》</div>
+        <hr noshade size=5 align=center width=100% color="blue">
+        <table id="tab2">
+            <tr>
+                <td>第一个奖品：</td>
+                <td id="one"></td>
+            </tr>
+            <tr>
+                <td>第二个奖品：</td>
+                <td id="one"></td>
+            </tr>
+            <tr>
+                <td>第三个奖品：</td>
+                <td id="one"></td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        // 通过标签名 获取元素
+        // 为元素绑定单击事件
+        let lis = document.querySelectorAll("#zhuan"); //获取到8个奖区
+        let num = document.querySelector("#shu");
+        let button = document.querySelector("button");
+        let td = document.querySelectorAll('#one');
+        // let tr = document.getElementById('tab2').querySelectorAll('tr');
+        let arr=[]
+        num.innerHTML =  localStorage.getItem('num') !== null ? localStorage.getItem('num') : 3
+  
+        button.addEventListener('click',() => {
+            // 禁用按钮
+            button.disabled = true;
+            // 在浏览器永久存储（localStorage）
+            let index = localStorage.getItem('num') !== null ? localStorage.getItem('num'):1
+            // 判断还有0次就禁用
+            if( index <= 0) {
+                button.disabled = true;
+                return
+            }
+            // 设置背景颜色
+            var timer = setInterval(function () {
+                for (var i = 0; i < lis.length; i++) {
+                    lis[i].style.backgroundColor = getColor();
+                }
+            }, 100);
+
+            // 使用延时器 清除定时器
+            setTimeout(function () {
+                clearInterval(timer)
+                for (var i = 0; i < lis.length; i++) {
+                    lis[i].style.backgroundColor = "";
+                }
+                var index = Math.floor(Math.random() * lis.length)
+
+                lis[index].style.backgroundColor = "red";
+                if (index != 5) {
+                    arr.push(lis[index].innerHTML)
+                    for(var i = 0; i < arr.length; i++){
+                        td[i].innerHTML=arr[i]
+                        // tr[i].innerHTML= "<td>第"+ i+1 +"一个奖品：</td> <td id='one'>" + arr[i]+ "</td>"
+                    }
+                }else{
+                    // 在来一次，要加1
+                    var new_num1 = parseInt(num.innerText) + 1;
+                    // 赋值新的次数
+                    num.innerHTML = new_num1;
+                }
+                // 启用按钮
+                button.disabled = false;
+            }, 2000)
+     
+            // 随机颜色的函数
+            function getColor() {
+                return "#" + Math.random().toString(16).substr(2, 6);
+            }
+            //切割次数次数减1
+            num.innerText--
+            // 赋值新的次数
+            localStorage.setItem('num',num.innerHTML);
+        })
+    </script>
+</body>
+</html>
